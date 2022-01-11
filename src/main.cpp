@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include "Renderer.h"
+#include "Keys.h"
+
 
 
 void setup() {
@@ -12,6 +14,8 @@ void loop() {
   if (millis() - timer >= 16) {
     timer = millis();
     //Rendering
+    tickKeys();
     render();
   }
 }
+
