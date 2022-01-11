@@ -160,7 +160,7 @@ void printBufScaledWithClearDeltas(buffer buf, Dimension* size, const unit scale
         if (dx > 0) {
             writeMulti(display.__clearColor, dx);
         }
-        for (unit xa = dx > 0 ? dx : 0; xa < aw; xa++)
+        for (unit xa = dx > 0 ? dx : 0; xa < aw + (dx < 0 ? dx : 0); xa++)
         {
             unit yi = y / scaleFactor;
             unit xi = xa / scaleFactor;
