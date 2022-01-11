@@ -48,7 +48,7 @@ void moveComponent(Component* cmp, Vec2D* delta) {
         cmp->position.y += dy;
         unit x = cmp->position.x, y = cmp->position.y, w = cmp->size.width, h = cmp->size.height;
         
-        displaySetDrawingArea(x - (dx > 0 ? dx : 0), y, w, h);
+        displaySetDrawingArea(x - (dx > 0 ? dx : 0), y - (dy > 0 ? dy : 0), w, h);
         printBufScaledWithClearDeltas(cmp->texture.bitmap.bitmap, &createDimension(aw, ah), scaleFactor, delta);
     }
 }

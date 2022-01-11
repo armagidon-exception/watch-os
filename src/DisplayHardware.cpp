@@ -155,11 +155,12 @@ void printBufScaledWithClearDeltas(buffer buf, Dimension* size, const unit scale
     SPI_START;
     const unit aw = drawingAreaWidth(), ah = drawingAreaHeight();
     const auto dx = getVecX(delta), dy = getVecY(delta);
-    for (unit y = 0; y < ah; y++)
+    if (dy > 0)
+        writeMulti(display.__clearColor, dy * aw);
+    for (unit y = dy > 0 ? dy : 0; y < ah + (dy < 0 ? dy : 0); y++)
     {
-        if (dx > 0) {
+        if (dx > 0)
             writeMulti(display.__clearColor, dx);
-        }
         for (unit xa = dx > 0 ? dx : 0; xa < aw + (dx < 0 ? dx : 0); xa++)
         {
             unit yi = y / scaleFactor;
@@ -167,9 +168,10 @@ void printBufScaledWithClearDeltas(buffer buf, Dimension* size, const unit scale
             color color = pgm_read_word(&buf[yi * size->width + xi]);
             writeMulti(color, 1);
         }
-        if (dx < 0) {
+        if (dx < 0)
             writeMulti(display.__clearColor, -dx);
-        }
     }
+    if (dy < 0)
+        writeMulti(display.__clearColor, abs(dy) * aw);
     SPI_END;
 }

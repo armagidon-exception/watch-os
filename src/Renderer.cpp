@@ -23,7 +23,7 @@ void rendererSetup() {
     pinMode(5, INPUT);
 }
 
-static Vec2D direction = createVec2D(-2, 0);
+static Vec2D direction = createVec2D(-2, 2);
 void render() {
     if (logo.position.x == 0) {
         direction.x = 2;    
