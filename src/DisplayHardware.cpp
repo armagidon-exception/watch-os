@@ -135,94 +135,41 @@ void printBufScaled(buffer buf, Dimension* size, const uint8_t scaleFactor) {
     SPI_START;
     const uint8_t aW = drawingAreaWidth();
     const uint8_t aH = drawingAreaHeight();
-    for (uint8_t y = 0; y < size->height; y++)
+    for (unit y = 0; y < aH; y++)
     {
-        for (uint8_t scaleY = 0; scaleY < scaleFactor; scaleY++)
+        for (unit xa = 0; xa < aW; xa++)
         {
-            const uint8_t scaledY = (y * scaleFactor + scaleY); 
-            if (scaledY >= aH) {
-                goto out2;
-            }
-            for (uint8_t x = 0; x < size->width; x++)
-            {
-                for (uint8_t scaleX = 0; scaleX < scaleFactor; scaleX++) {
-                    const uint8_t scaledX = (x * scaleFactor + scaleX);
-                    if (scaledX >= aW) {
-                        goto out1;
-                    }
-
-                    uint16_t color = pgm_read_word(&buf[y * size->width + x]);
-                    writeMulti(color, 1);
-                }
-            }
-            out1: {}
+            unit yi = y / scaleFactor;
+            unit xi = xa / scaleFactor;
+            color color = pgm_read_word(&buf[yi * size->width + xi]);
+            writeMulti(color, 1);
         }
     }
-    out2:
-
     SPI_END;
 }
 
 void printBufScaledWithClearDeltas(buffer buf, Dimension* size, const unit scaleFactor, Vec2D* delta) {
+    if (delta->x == 0 && delta->y == 0) return;
     sendCommand(ST_RAMWR);
     DC_DATA(DC_PIN);
     SPI_START;
-    const unit aW = drawingAreaWidth();
-    const unit aH = drawingAreaHeight();
-    const int8_t dx = delta->x, dy = delta->y;
-    if (dy > 0) {
-        writeMulti(display.__clearColor, aW * dy);
-    }
-    for (unit y = 0; y < size->height; y++)
+    const unit aw = drawingAreaWidth(), ah = drawingAreaHeight();
+    const auto dx = getVecX(delta), dy = getVecY(delta);
+    for (unit y = 0; y < ah; y++)
     {
-        for (unit scaleY = 0; scaleY < scaleFactor; scaleY++)
+        if (dx > 0) {
+            writeMulti(display.__clearColor, dx);
+        }
+        for (unit xa = dx > 0 ? dx : 0; xa < aw; xa++)
         {
-            const unit scaledY = (y * scaleFactor + scaleY); 
-            if (scaledY >= aH)
-                goto out2;
-            
-            uint16_t buffer[aW];
-
-            if (dx > 0) {
-                for (unit i = 0; i < dx; i++)
-                {
-                    buffer[i] = display.__clearColor;
-                }
-            }
-
-
-            unit scaledX;
-            for (unit x = 0; x < size->width; x++)
-            {
-                for (unit scaleX = 0; scaleX < scaleFactor; scaleX++) {
-                    scaledX = (x * scaleFactor + scaleX);
-                    if (scaledX >= aW) {
-                        goto print;
-                    }
-                    uint16_t color = pgm_read_word(&buf[y * size->width + x]);
-                    buffer[scaledX  + (dx > 0 ? dx : 0)] = color;
-                }
-            }
-
-            if (dx < 0) {
-                for (unit i = 0; i < aW - scaledX; i++)
-                {
-                    buffer[scaledX + i] = display.__clearColor;
-                }
-            }
-
-            print:
-            for (unit i = 0; i < aW; i++)
-            {
-                writeMulti(buffer[i], 1);
-            }
-            
+            unit yi = y / scaleFactor;
+            unit xi = xa / scaleFactor;
+            color color = pgm_read_word(&buf[yi * size->width + xi]);
+            writeMulti(color, 1);
+        }
+        if (dx < 0) {
+            writeMulti(display.__clearColor, -dx);
         }
     }
-    out2:
-    if (dy < 0) {
-        writeMulti(display.__clearColor, aW * -dy);
-    }
-
     SPI_END;
 }

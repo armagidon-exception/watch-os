@@ -29,3 +29,18 @@ Vec2D createVec2D(unit x, unit y) {
     vec.y = y;
     return vec;
 }
+
+sunit getVecX(Vec2D* vec) {
+    return (sunit) vec->x;
+}
+sunit getVecY(Vec2D* vec) {
+    return (sunit) vec->y;
+}
+
+unit abs(sunit x) {
+    if (x & (1 << 7) != 0) {
+        x = ~x;
+        x + 1;
+    }
+    return x;
+}

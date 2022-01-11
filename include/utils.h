@@ -5,6 +5,7 @@
 typedef uint16_t color;
 typedef const uint16_t* buffer;
 typedef uint8_t unit;
+typedef int8_t sunit;
 
 typedef struct {
     buffer bitmap;
@@ -25,3 +26,6 @@ void setBit(uint8_t* data, uint8_t bit, bool flag);
 Bitmap createBitmap(const uint16_t* bitmap, uint16_t size);
 Dimension createDimension(unit w, unit h);
 Vec2D createVec2D(unit x, unit y);
+
+sunit getVecX(Vec2D* vec);
+sunit getVecY(Vec2D* vec);
