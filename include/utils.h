@@ -8,7 +8,7 @@ typedef uint8_t unit;
 typedef int8_t sunit;
 
 typedef struct {
-    buffer bitmap;
+    uint16_t* bitmap;
     uint16_t size;
 } Bitmap;
 

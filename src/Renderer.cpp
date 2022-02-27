@@ -1,14 +1,15 @@
 #include "Renderer.h"
 #include "Component.h"
 #include "utils.h"
-#include <Arduino.h>
+#include "avr/pgmspace.h"
 #include "Keys.h"
 
 #define BITMAP_SCANSIZE 2
 #define SCALE_FACTOR 120
 
 static Component logo;
-extern Display display;
+static Arduino_ST7789* gDisplay;
+
 static const uint16_t bitmap[] PROGMEM = {
     0xF30A, 0x5711,
     0x651D, 0xE521
@@ -17,12 +18,11 @@ static const uint16_t bitmap[] PROGMEM = {
 void left(ButtonState state);
 void right(ButtonState state);
 
-void rendererSetup() {
+void rendererSetup(Arduino_ST7789* display) {
     Serial.begin(9600);
-    clearScreen();
+    gDisplay = display;
     logo = createLogo(&createBitmap(bitmap, sizeof(bitmap) / sizeof(bitmap[0])), 64, 64, 0, 0);
     logo.visible = true;
-    logo.position.x = DISPLAY_SIZE - 64;
     registerKeyHandler(left, FIRST_KEY);
     registerKeyHandler(right, SECOND_KEY);
 }
@@ -30,27 +30,29 @@ void rendererSetup() {
 static Vec2D direction = createVec2D(0, 0);
 
 void render() {
-    //renderComponent(&logo);
+    renderComponent(&logo);
 }
 
 void drawLine(int x, int y, int length, uint8_t thickness, bool vertical, uint16_t color) {
-    fillArea(&createVec2D(x, y), &createDimension(vertical ? thickness : length, vertical ? length : thickness), color);
+    gDisplay->fillRect(x,y, vertical ? thickness : length, vertical ? length : thickness, color);
 }
 
 void renderStatusBar() {
-    drawLine(0, 20, DISPLAY_SIZE, 2, false, WHITE);
+    drawLine(0, 20, 240, 2, false, WHITE);
 }
 
 void left(ButtonState state) {
   if (state == PRESSED) {
       direction.x = -10;
-      moveComponent(&logo, &direction);
+  } else if (state == RELEASED){
+      direction.x = 0;
   }
 }
 
 void right(ButtonState state) {
   if (state == PRESSED) {
     direction.x = 10;
-    moveComponent(&logo, &direction);
+  } else if (state == RELEASED){
+    direction.x = 0;
   }
 }

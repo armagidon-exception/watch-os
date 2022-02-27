@@ -40,8 +40,8 @@ void sendCommand(uint8_t command);
 void sendCommandArgument(uint8_t argument);
 void sendSingularData(uint16_t data);
 void sendRepeatedData(uint16_t data, uint16_t quantity);
-
 void displaySetDrawingArea(uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+void displaySetDrawingAreaAbsolute(uint8_t x, uint8_t y, uint8_t ex, uint8_t ey);
 uint8_t drawingAreaWidth();
 uint8_t drawingAreaHeight();
 void clearScreen();

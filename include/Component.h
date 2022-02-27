@@ -12,6 +12,7 @@ typedef union {
 
 typedef struct {
     Vec2D position;
+    Vec2D prevPos;
     Dimension size;
     Texture texture;
     bool visible : 1;
@@ -19,4 +20,4 @@ typedef struct {
 } Component;
 
 Component createLogo(Bitmap* bitmap, uint8_t w, uint8_t h, uint8_t x, uint8_t y);
-void moveComponent(Component* cmp, Vec2D* delta);
+void renderComponent(Component* cmp);

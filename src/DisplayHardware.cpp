@@ -149,29 +149,19 @@ void printBufScaled(buffer buf, Dimension* size, const uint8_t scaleFactor) {
 }
 
 void printBufScaledWithClearDeltas(buffer buf, Dimension* size, const unit scaleFactor, Vec2D* delta) {
-    if (delta->x == 0 && delta->y == 0) return;
     sendCommand(ST_RAMWR);
     DC_DATA(DC_PIN);
     SPI_START;
     const unit aw = drawingAreaWidth(), ah = drawingAreaHeight();
-    const auto dx = getVecX(delta), dy = getVecY(delta);
-    if (dy > 0)
-        writeMulti(display.__clearColor, dy * aw);
-    for (unit y = dy > 0 ? dy : 0; y < ah + (dy < 0 ? dy : 0); y++)
+    for (unit y = 0; y < ah; y++)
     {
-        if (dx > 0)
-            writeMulti(display.__clearColor, dx);
-        for (unit xa = dx > 0 ? dx : 0; xa < aw + (dx < 0 ? dx : 0); xa++)
+        for (unit xa = 0; xa < aw; xa++)
         {
             unit yi = y / scaleFactor;
             unit xi = xa / scaleFactor;
             color color = pgm_read_word(&buf[yi * size->width + xi]);
             writeMulti(color, 1);
         }
-        if (dx < 0)
-            writeMulti(display.__clearColor, -dx);
     }
-    if (dy < 0)
-        writeMulti(display.__clearColor, abs(dy) * aw);
     SPI_END;
 }

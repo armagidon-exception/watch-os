@@ -8,6 +8,20 @@
 
 extern Display display;
 
+void displaySetDrawingAreaAbsolute(uint8_t x, uint8_t y, uint8_t ex, uint8_t ey) {
+    display.drawingArea[0] = x >= DISPLAY_SIZE ? x - DISPLAY_SIZE : x; //startX
+    display.drawingArea[1] = y >= DISPLAY_SIZE ? y - DISPLAY_SIZE : y; //startY
+    display.drawingArea[2] = ex >= DISPLAY_SIZE ? DISPLAY_SIZE - 1 : ex; //endX
+    display.drawingArea[3] = ey >= DISPLAY_SIZE ? DISPLAY_SIZE - 1 : ey; //endY
+
+    sendCommand(ST_CASET);
+    sendSingularData(display.drawingArea[0]);
+    sendSingularData(display.drawingArea[2]);
+    sendCommand(ST_RASET);
+    sendSingularData(display.drawingArea[1]);
+    sendSingularData(display.drawingArea[3]);
+}
+
 void displaySetDrawingArea(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
     display.drawingArea[0] = x >= DISPLAY_SIZE ? x - DISPLAY_SIZE : x; //startX
     display.drawingArea[1] = y >= DISPLAY_SIZE ? y - DISPLAY_SIZE : y; //startY
