@@ -6,17 +6,8 @@
 
 extern Arduino_ST7789 gDisplay;
 
-Component createLogo(Bitmap* bitmap, uint8_t w, uint8_t h, uint8_t x, uint8_t y) {
-    Texture texture;
-    texture.bitmap = *bitmap;
-
-    Component cmp;
-    cmp.size = createDimension(w, h);
-    cmp.position = createVec2D(x, y);
-    cmp.prevPos = createVec2D(x, y);
-    cmp.texture = texture;
-    cmp.type = LOGO;
-    return cmp;
+Component clock(uint8_t x, uint8_t y, uint8_t scale) {
+    gDisplay.fillRect(x, y, 25, 7, WHITE);
 }
 
 void printBitMap(Bitmap* bitmap, uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t scale) {
@@ -30,17 +21,5 @@ void printBitMap(Bitmap* bitmap, uint8_t x, uint8_t y, uint8_t w, uint8_t h, uin
             gDisplay.fillRect(x * scale, y * scale, scale, scale, pgm_read_word(&bitmap->bitmap[x + y * w]));
         }
         
-    }
-    
-}
-
-void renderComponent(Component* cmp) {
-    if (!cmp->visible) return;
-    if (cmp->type == LOGO) {
-        const uint8_t scaleFactor = sqrt( ((uint16_t) (cmp->size.width * cmp->size.height)) / cmp->texture.bitmap.size);
-        const uint8_t aw = cmp->size.width / scaleFactor;
-        const uint8_t ah = cmp->size.height / scaleFactor;
-
-        printBitMap(&cmp->texture.bitmap, cmp->position.x, cmp->position.y, aw, ah, scaleFactor);
     }
 }

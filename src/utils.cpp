@@ -8,7 +8,7 @@ void setBit(uint8_t* data, uint8_t bit, bool flag) {
     }
 }
 
-Bitmap createBitmap(const uint16_t* bitmap, uint16_t size) {
+Bitmap createBitmap(uint16_t* bitmap, uint16_t size) {
     Bitmap bmp;
     bmp.bitmap = bitmap;
     bmp.size = size;

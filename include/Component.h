@@ -1,23 +1,23 @@
 #pragma once
 #include "utils.h"
 
-typedef enum {
-    LOGO
-} ComponentType;
-
 typedef union {
     Bitmap bitmap;
     uint16_t background;
 } Texture;
 
-typedef struct {
-    Vec2D position;
-    Vec2D prevPos;
-    Dimension size;
-    Texture texture;
-    bool visible : 1;
-    ComponentType type;
-} Component;
+// typedef union
+// {
+//     struct {
+//         Vec2D position;
+//         Vec2D prevPos;
+//         Dimension size;
+//         Texture texture;
+//         bool visible : 1;
+//     };
+//     void (*render)();
+// } Component;
 
-Component createLogo(Bitmap* bitmap, uint8_t w, uint8_t h, uint8_t x, uint8_t y);
-void renderComponent(Component* cmp);
+typedef struct {
+    void (*render)();
+} Component;

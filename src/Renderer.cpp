@@ -15,44 +15,33 @@ static const uint16_t bitmap[] PROGMEM = {
     0x651D, 0xE521
 };
 
-void left(ButtonState state);
-void right(ButtonState state);
+void renderClock(int minutes, int hours, uint8_t x, uint8_t y, uint8_t scale);
 
 void rendererSetup(Arduino_ST7789* display) {
     Serial.begin(9600);
     gDisplay = display;
-    logo = createLogo(&createBitmap(bitmap, sizeof(bitmap) / sizeof(bitmap[0])), 64, 64, 0, 0);
-    logo.visible = true;
-    registerKeyHandler(left, FIRST_KEY);
-    registerKeyHandler(right, SECOND_KEY);
 }
 
-static Vec2D direction = createVec2D(0, 0);
-
 void render() {
-    renderComponent(&logo);
+    
 }
 
 void drawLine(int x, int y, int length, uint8_t thickness, bool vertical, uint16_t color) {
     gDisplay->fillRect(x,y, vertical ? thickness : length, vertical ? length : thickness, color);
 }
 
-void renderStatusBar() {
-    drawLine(0, 20, 240, 2, false, WHITE);
+void clock(uint8_t hours, uint8_t minutes) {
+  renderClock(minutes, hours, (240 - 5*6*6) / 2, 120 - 6 * 8 / 2, 6);
 }
 
-void left(ButtonState state) {
-  if (state == PRESSED) {
-      direction.x = -10;
-  } else if (state == RELEASED){
-      direction.x = 0;
-  }
-}
-
-void right(ButtonState state) {
-  if (state == PRESSED) {
-    direction.x = 10;
-  } else if (state == RELEASED){
-    direction.x = 0;
-  }
+void renderClock(int minutes, int hours, uint8_t x, uint8_t y, uint8_t scale) {
+    gDisplay->fillRect(x, y, 30 * scale, 8 * scale, WHITE);
+    gDisplay->setCursor(x, y);
+    gDisplay->setTextSize(scale);
+    gDisplay->setTextColor(BLACK);
+    gDisplay->setTextWrap(false);
+    char* s = (char*) malloc(5);
+    sprintf(s, "%02d:%02d", hours, minutes);
+    gDisplay->print(s);
+    free(s);
 }
