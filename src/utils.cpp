@@ -22,7 +22,6 @@ Dimension createDimension(unit w, unit h) {
     return d;
 }
 
-
 Vec2D createVec2D(unit x, unit y) {
     Vec2D vec;
     vec.x = x;

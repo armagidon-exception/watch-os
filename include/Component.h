@@ -1,5 +1,6 @@
 #pragma once
 #include "utils.h"
+#include "Arduino_ST7789_Fast.h"
 
 typedef union {
     Bitmap bitmap;
@@ -19,5 +20,6 @@ typedef union {
 // } Component;
 
 typedef struct {
-    void (*render)();
+    void (*render)(Arduino_ST7789*);
+    bool updated:1;
 } Component;

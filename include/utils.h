@@ -29,3 +29,4 @@ Vec2D createVec2D(unit x, unit y);
 
 sunit getVecX(Vec2D* vec);
 sunit getVecY(Vec2D* vec);
+int arrLen(void* array);

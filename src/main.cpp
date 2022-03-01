@@ -11,15 +11,16 @@ void setup() {
   gDisplay.begin();
   gDisplay.clearScreen();
   rendererSetup(&gDisplay);
+  initializeClock();
 }
 
 static u32 timer = millis();
 void loop() {
+  tickKeys();
+  tickClock();
   if (millis() - timer >= 16) {
     timer = millis();
     //Rendering
-    tickKeys();
-    tickClock();
     render();
   }
 }
