@@ -1,6 +1,6 @@
 #include "Clock.h"
-#include "Component.h"
 #include "Renderer.h"
+#include "scene.h"
 #define CLOCK_SCALE 6
 #define CLOCK_X DISPLAY_SIZE / 2 - 15 * CLOCK_SCALE
 #define CLOCK_Y DISPLAY_SIZE / 2 - 8 * CLOCK_SCALE
@@ -8,9 +8,10 @@
 static volatile uint8_t seconds = 0;
 static volatile uint8_t minutes = 0;
 static volatile uint8_t hours = 0;
+static uint8_t __clockSceneIndex;
 
 static unsigned long timeStump = millis();
-static Component clock;
+extern Scene* scenes;
 
 void tickClock() {
     bool update = false;
@@ -29,13 +30,14 @@ void tickClock() {
         update = true;
     }
     if (update) {
-        clock.updated = false;
+        scenes[__clockSceneIndex].components[0].update = true;
     }
 }
 
-void renderClock(Arduino_ST7789 *display) {
-    display->fillRect(CLOCK_X, CLOCK_Y, 30 * CLOCK_SCALE, 8 * CLOCK_SCALE, WHITE);
-    display->setCursor(CLOCK_X, CLOCK_Y);
+void renderClock(Component* context, Arduino_ST7789* display) {
+    Serial.println("render clock");
+    display->fillRect(context->x, context->y, 30 * CLOCK_SCALE, 8 * CLOCK_SCALE, WHITE);
+    display->setCursor(context->x, context->y);
     display->setTextSize(CLOCK_SCALE);
     display->setTextColor(BLACK);
     display->setTextWrap(false);
@@ -45,8 +47,9 @@ void renderClock(Arduino_ST7789 *display) {
     free(s);
 }
 
+
 void initializeClock() {
-    clock.render = renderClock;
-    clock.updated = false;
-    addComponent(&clock);
+    __clockSceneIndex = addScene(createScene());
+    Component clock = createComponent(CLOCK_X, CLOCK_Y, renderClock);
+    addComponent(&scenes[__clockSceneIndex], clock);
 }
