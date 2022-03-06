@@ -5,7 +5,6 @@
 #include "Clock.h"
 #include "main_screen.h"
 
-
 Arduino_ST7789 gDisplay(7, 8);
 
 void setup() {
