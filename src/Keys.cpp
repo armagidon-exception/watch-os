@@ -34,10 +34,7 @@ void tickKeys() {
 
 static Button createButton(uint8_t pin, uint8_t id) {
     pinMode(pin, INPUT);
-    Button button;
-    button.pin = pin & 0xF;
-    button.state = RELEASED;
-    button.keyhandler = nullptr;
+    Button button = {RELEASED, pin & 0xF, nullptr};
     buttons[id & 3] = button;
     return button;
 }

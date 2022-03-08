@@ -1,13 +1,13 @@
 #pragma once
 #include "component.h"
+#include "List.h"
 
 typedef struct {
-    uint8_t __component_index;
     bool show:1;
-    Component* components;
+    List components;
 } Scene;
 
-Scene createScene();
+Scene create_scene();
 void showScene(Scene* scene);
 void hideScene(Scene* scene);
-void addComponent(Scene* scene, Component cmp);
+void add_component(Scene* scene, Component cmp);

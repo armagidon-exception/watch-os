@@ -1,22 +1,33 @@
 #include "main_screen.h"
+#include "Clock.h"
+#include "Arduino.h"
 
-uint8_t __mainScreenSceneIndex;
-extern Scene* scenes;
+#define __MAIN_SCREEN_PTR ((Scene*) get_element(&scenes, __mainScreenSceneIndex))
 
-#define CLOCK_X DISPLAY_SIZE / 2 - 3 * 8 * 4
-#define CLOCK_Y DISPLAY_SIZE / 2 - 8 * 4
+extern List scenes;
+static uint8_t __mainScreenSceneIndex;
+
+void renderStatusBar(Component* context, Arduino_ST7789* display) {
+    drawLine(context->x, context->y, DISPLAY_SIZE, 3, false, WHITE);
+}
 
 void renderWelcomeMessage(Component* context, Arduino_ST7789* display) {
     display->setCursor(context->x, context->y);
-    display->setTextSize(4);
     display->setTextColor(WHITE);
-    display->setTextWrap(false);
+    display->setTextSize(3);
     display->print("WELCOME!");
 }
 
+
 void initMainScreen() {
-    Component welcomeMessage = createComponent(CLOCK_X, CLOCK_Y, renderWelcomeMessage);
-    __mainScreenSceneIndex = addScene(createScene());
-    Serial.println("MS" + String(__mainScreenSceneIndex));
-    addComponent(&scenes[__mainScreenSceneIndex], welcomeMessage);
+    __mainScreenSceneIndex = addScene(create_scene());
+    Component statusBar = createComponent(0, 20, renderStatusBar);
+    Component clock = clockWidget(2, WHITE, WHITE, false);
+    Component welcome = createComponent(50, 100, renderWelcomeMessage);
+    clock.x = DISPLAY_SIZE - 60;
+    clock.y = 20 - 16;
+    registerClockWidget(clock.id);
+    add_component(__MAIN_SCREEN_PTR, clock);
+    add_component(__MAIN_SCREEN_PTR, statusBar);
+    add_component(__MAIN_SCREEN_PTR, welcome);
 }

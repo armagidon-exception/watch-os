@@ -12,6 +12,7 @@ void setup() {
   gDisplay.clearScreen();
   rendererSetup(&gDisplay);
   initializeClock();
+  initClockScene();
   initMainScreen();
   setScene(0);
 }

@@ -1,23 +1,20 @@
 #include "scene.h"
+#include "stdlib.h"
 
-Scene createScene() {
-    Scene scene;
-    scene.show = false;
-    scene.__component_index  = 0;
-    scene.components = (Component*) malloc(sizeof(Component));
-    return scene;
+Scene create_scene() {
+    return {false, create_arraylist(1, sizeof(Component))};
 }
 
 void showScene(Scene* scene) {
     scene->show = true;
 }
 void hideScene(Scene* scene) {
-    scene->show =  false;
+    scene->show = false;
 }
 
-void addComponent(Scene* scene, Component cmp) {
-    if (scene->__component_index > 0) {
-        scene->components = (Component*) realloc(scene->components, sizeof(Component) * (scene->__component_index + 1));  //Reallocate memory for components array
+void add_component(Scene* scene, Component cmp) {
+    if (scene->components.__element_head > scene->components.__initial_capacity - 1) {
+        scene->components.array = realloc(scene->components.array, scene->components.__element_size * (scene->components.__element_head + 1));  //Reallocate memory for components array
     }
-    scene->components[scene->__component_index++] = cmp; //Add new component
+    ((Component*) scene->components.array)[scene->components.__element_head++] = cmp; //Add new component
 }

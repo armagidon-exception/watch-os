@@ -9,3 +9,4 @@ void rendererSetup(Arduino_ST7789* d);
 void render();
 void setScene(uint8_t sceneIndex);
 uint8_t addScene(Scene scene);
+Component* findComponentById(uint8_t id);

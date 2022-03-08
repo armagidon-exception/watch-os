@@ -9,24 +9,15 @@ void setBit(uint8_t* data, uint8_t bit, bool flag) {
 }
 
 Bitmap createBitmap(uint16_t* bitmap, uint16_t size) {
-    Bitmap bmp;
-    bmp.bitmap = bitmap;
-    bmp.size = size;
-    return bmp;
+    return {bitmap, size};
 }
 
 Dimension createDimension(unit w, unit h) {
-    Dimension d;
-    d.height = h;
-    d.width = w;
-    return d;
+    return {w, h};
 }
 
 Vec2D createVec2D(unit x, unit y) {
-    Vec2D vec;
-    vec.x = x;
-    vec.y = y;
-    return vec;
+    return {x, y};
 }
 
 sunit getVecX(Vec2D* vec) {
