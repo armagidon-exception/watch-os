@@ -1,12 +1,12 @@
 #include "Keys.h"
 
-void registerKeyHandler(void (*keyhandler)(ButtonState), int key) {
+void registerKeyHandler(KeyCallback keyhandler, int key) {
     buttons[key].keyhandler = keyhandler;
 }
 
 void dispatch(int key, ButtonState state) {
     buttons[key].state = state;
-    (*buttons[key].keyhandler)(state);
+    buttons[key].keyhandler(state, key);
 }
 
 ButtonState getState(uint8_t key) {
