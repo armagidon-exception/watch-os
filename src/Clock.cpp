@@ -15,9 +15,7 @@ static unsigned long timeStump = millis();
 extern List scenes;
 static List clockWidgetIds;
 
-typedef struct {
-    uint8_t size; uint16_t bg; uint16_t fg; bool fill:1;
-} ClockShape;
+
 
 void tickClock() {
     bool update = false;
@@ -77,12 +75,28 @@ void initClockScene() {
     clock.y = CLOCK_Y;
     add_component(__CLOCK_PTR, clock);
     registerClockWidget(clock.id);
+
+    Scene* clockScene = (Scene*) get_element(&scenes, __clockSceneIndex);
+    KeyCallback wakeUpLambda = [](ButtonState state, uint8_t keyCode) {
+        if (state == PRESSED)
+            setScene(__MAINSCREEN_SCENE_INDEX);
+    };
+    for (uint8_t i = 0; i < 3; i++)
+        clockScene->keyCallbacks[i] = wakeUpLambda;
 }
 
 Component clockWidget(uint8_t size, uint16_t bg, uint16_t fg, bool fill) {
-    Component component = createComponent(0, 0, renderClock);
+    return clockWidget({size, bg, fg, fill});
+}
+
+Component clockWidget(Vec2D position, ClockShape shape) {
+    Component component = createComponent(position.x, position.y, renderClock);
     component.customData = calloc(1, sizeof(ClockShape));
-    ClockShape shape = {size, bg, fg, fill};
+    component.focusable = false;
     ((ClockShape*) component.customData)[0] = shape;
     return (component);
 }
+Component clockWidget(ClockShape shape) {
+    return clockWidget({0, 0}, shape);
+}
+
