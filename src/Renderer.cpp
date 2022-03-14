@@ -15,7 +15,6 @@ void handleButton1(ButtonState state);
 void rendererSetup(Arduino_ST7789* display) {
     Serial.begin(9600);
     gDisplay = display;
-    registerKeyHandler(handleButton1, 0);
     scenes = create_arraylist(1, sizeof(Scene));
 }
 
@@ -36,15 +35,6 @@ void drawLine(int x, int y, int length, uint8_t thickness, bool vertical, uint16
     gDisplay->fillRect(x,y, vertical ? thickness : length, vertical ? length : thickness, color);
 }
 
-void handleButton1(ButtonState state) {
-    if (state == PRESSED) {
-        if (currentSceneIndex == 0)
-            setScene(1);
-        else
-            setScene(0);
-    }
-}
-
 void setScene(uint8_t sceneIndex)  {
     Scene* s = (Scene*) get_element(&scenes, currentSceneIndex);
     hideScene(s);
@@ -54,7 +44,16 @@ void setScene(uint8_t sceneIndex)  {
         Component* ptr = (Component*) context;
         ptr->update = true;
     });
+
     s = (Scene*) get_element(&scenes, currentSceneIndex);
+    for(uint8_t i = 0; i < 3; i++) {
+        registerKeyHandler([](ButtonState state, uint8_t keyCode) {
+            Scene* s = (Scene*) get_element(&scenes,  currentSceneIndex);
+            if (s->keyCallbacks[keyCode] != nullptr)
+                s->keyCallbacks[keyCode](state, keyCode);
+        }, i);
+    }
+
     showScene(s);
 }
 
