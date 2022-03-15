@@ -13,7 +13,7 @@ static uint8_t findFreeId() {
 }
 
 Component createComponent(int x, int y, RendererCallback renderMethod) {
-    Component cmp = {x, y, renderMethod, true, findFreeId(), nullptr, false, false, CUSTOM};
+    Component cmp = {x, y, renderMethod, true, findFreeId(), allocate_storage(), false, false, CUSTOM};
     if (cmp.id == -1) {
         Serial.println("Could not find free id");
     }

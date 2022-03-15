@@ -16,7 +16,7 @@ static uint8_t __mainScreenSceneIndex;
 
 void renderArrow(Component* context, Arduino_ST7789* display)
 {
-    ArrowShape* shape = (ArrowShape*) context->customData + sizeof(ButtonData);
+    ArrowShape* shape = (ArrowShape*) get_from_storage(&context->customData, 1);
     //Verticies
     uint8_t x1 = context->x, x2 = context->x + (shape->inverted ? -10: 10) * shape->size, x3 = context->x + (shape->inverted ? -10 : 10) * shape->size;
     uint8_t y1 = context->y, y2 = context->y + 10 * shape->size, y3 = context->y - 10 * shape->size;
@@ -34,13 +34,8 @@ void renderArrow(Component* context, Arduino_ST7789* display)
 }
 
 Component createArrow(Vec2D pos, bool inverted, uint8_t size) {
-    Component component = create_button(pos, renderArrow, [](Component* context) {
-        Component* box = findComponentById(0);
-        ArrowShape* shape = (ArrowShape*) context->customData + sizeof(ButtonData);
-        box->update = true;
-    });
-    component.customData = realloc(component.customData, sizeof(ArrowShape) + sizeof(ButtonData));
-    ((ArrowShape*) component.customData + sizeof(ButtonData))[0] = {inverted, size};
+    Component component = create_button(pos, renderArrow, [](Component* context) {});
+    put_to_storage(&component.customData, &((ArrowShape) {inverted, size}), sizeof(ArrowShape));
     return component;
 }
 
@@ -78,12 +73,11 @@ void initMainScreen() {
     registerKeyBindings();
     Component statusBar = createComponent(0, 20, [](Component* context, Arduino_ST7789* display) 
         {drawLine(context->x, context->y, DISPLAY_SIZE, 3, false, WHITE);});
-    Component clock = clockWidget({DISPLAY_SIZE - 60, 20 - 16}, {2, WHITE, WHITE, false});
+    Component clock = clockWidget({DISPLAY_SIZE - 60, 20 - 16}, {WHITE, WHITE, 2, false});
     registerClockWidget(clock.id);
     add_component(__MAIN_SCREEN_PTR, clock);
     add_component(__MAIN_SCREEN_PTR, statusBar);
     add_component(__MAIN_SCREEN_PTR, createArrow({20, (DISPLAY_SIZE >> 1) + 20}, false, 3));
     add_component(__MAIN_SCREEN_PTR, createArrow({DISPLAY_SIZE - 20, (DISPLAY_SIZE >> 1) + 20}, true, 3));
-    Scene* scene = __MAIN_SCREEN_PTR;
-    highlightComponent(AS_COMPONENT(get_element(&scene->components, get_focusable_component(scene, scene->tabIndex))));
+    highlightComponent(AS_COMPONENT(get_element(&__MAIN_SCREEN_PTR->components, get_focusable_component(__MAIN_SCREEN_PTR, __MAIN_SCREEN_PTR->tabIndex))));
 }

@@ -16,7 +16,6 @@ extern List scenes;
 static List clockWidgetIds;
 
 
-
 void tickClock() {
     bool update = false;
     if (millis() - timeStump >= 1000) {
@@ -43,16 +42,16 @@ void tickClock() {
 }
 
 void renderClock(Component* context, Arduino_ST7789* display) {
-    ClockShape shape = ((ClockShape*) context->customData)[0];
-    if (shape.fill) {
-        display->fillRect(context->x, context->y, 30 * shape.size, 8 * shape.size, shape.bg);
+    ClockShape* shape = (ClockShape*) get_from_storage(&context->customData, 0);
+    if (shape->fill) {
+        display->fillRect(context->x, context->y, 30 * shape->size, 8 * shape->size, shape->bg);
     } else {
-        display->fillRect(context->x, context->y, 30 * shape.size, 8 * shape.size, BLACK);
-        display->drawRect(context->x, context->y, 30 * shape.size, 8 * shape.size, shape.bg);
+        display->fillRect(context->x, context->y, 30 * shape->size, 8 * shape->size, BLACK);
+        display->drawRect(context->x, context->y, 30 * shape->size, 8 * shape->size, shape->bg);
     }
     display->setCursor(context->x, context->y);
-    display->setTextSize(shape.size);
-    display->setTextColor(shape.fg);
+    display->setTextSize(shape->size);
+    display->setTextColor(shape->fg);
     display->setTextWrap(false);
     char s[6];
     sprintf(s, "%02d:%02d", hours, minutes);
@@ -86,14 +85,13 @@ void initClockScene() {
 }
 
 Component clockWidget(uint8_t size, uint16_t bg, uint16_t fg, bool fill) {
-    return clockWidget({size, bg, fg, fill});
+    return clockWidget({bg, fg, size, fill});
 }
 
 Component clockWidget(Vec2D position, ClockShape shape) {
     Component component = createComponent(position.x, position.y, renderClock);
-    component.customData = calloc(1, sizeof(ClockShape));
     component.focusable = false;
-    ((ClockShape*) component.customData)[0] = shape;
+    put_to_storage(&component.customData, &shape, sizeof(ClockShape));
     return (component);
 }
 Component clockWidget(ClockShape shape) {

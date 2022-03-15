@@ -3,9 +3,9 @@
 #include "utils.h"
 
 typedef struct {
-    uint8_t size;
     uint16_t bg;
     uint16_t fg;
+    uint8_t size;
     bool fill:1;
 } ClockShape;
 

@@ -19,10 +19,7 @@ void hideScene(Scene* scene) {
 }
 
 void add_component(Scene* scene, Component cmp) {
-    if (scene->components.__element_head > scene->components.__initial_capacity - 1) {
-        scene->components.array = realloc(scene->components.array, scene->components.__element_size * (scene->components.__element_head + 1));  //Reallocate memory for components array
-    }
-    AS_COMPONENT(scene->components.array)[scene->components.__element_head++] = cmp;  //Add new component
+    add_element_uni(&scene->components, cmp, Component);
     if (cmp.focusable) {
         uint8_t index =  (scene->components.__element_head - 1);
         add_int(&scene->focusable_elements, index);

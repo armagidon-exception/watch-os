@@ -31,8 +31,14 @@ void deleteList(List* list) {
 }
 
 void add_int(List* list, uint8_t element) {
-    if (list->__element_head > list->__initial_capacity - 1) {
-        list->array = realloc(list->array, list->__element_size * (list->__element_head + 1));  //Reallocate memory for components array
+    add_element_uni(list,  element, uint8_t);
+}
+
+uint8_t reduce(List* list, uint8_t (*accumulator)(uint8_t, uint8_t)) {
+    uint8_t initValue = 0;
+    for (uint8_t i = 0; i < list->__element_head; i++) {
+        uint8_t v = *(uint8_t*) get_element(list, i);
+        initValue = accumulator(initValue, v);
     }
-    ((uint8_t*) list->array)[list->__element_head++] = element; //Add new component
+    return initValue;
 }

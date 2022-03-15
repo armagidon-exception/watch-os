@@ -1,5 +1,6 @@
 #pragma once
 #include "utils.h"
+#include "custom_data_storage.h"
 #include "Arduino_ST7789_Fast.h"
 
 #define AS_COMPONENT(a) ((Component*) a)
@@ -16,7 +17,7 @@ struct Component {
     void (*render)(Component*, Arduino_ST7789*);
     bool update;
     uint8_t id;
-    void* customData;
+    DataStorage customData;
     bool highlighted;
     bool focusable;
     uint8_t type;
