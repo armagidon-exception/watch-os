@@ -19,10 +19,10 @@ void hideScene(Scene* scene) {
 }
 
 void add_component(Scene* scene, Component cmp) {
-    add_element_uni(&scene->components, cmp, Component);
+    add_element(&scene->components, &cmp);
     if (cmp.focusable) {
         uint8_t index =  (scene->components.__element_head - 1);
-        add_int(&scene->focusable_elements, index);
+        add_element(&scene->focusable_elements, &index);
     }
 }
 
