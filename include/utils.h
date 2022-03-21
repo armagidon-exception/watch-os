@@ -8,11 +8,6 @@ typedef uint8_t unit;
 typedef int8_t sunit;
 
 typedef struct {
-    uint16_t* bitmap;
-    uint16_t size;
-} Bitmap;
-
-typedef struct {
     unit width;
     unit height;
 } Dimension;
@@ -22,8 +17,14 @@ typedef struct  {
     unit y;
 } Vec2D;
 
+typedef struct {
+    const uint16_t* colors;
+    uint16_t length;
+    Dimension size;
+    uint8_t scale;
+} Bitmap;
+
 void setBit(uint8_t* data, uint8_t bit, bool flag);
-Bitmap createBitmap(const uint16_t* bitmap, uint16_t size);
 Dimension createDimension(unit w, unit h);
 Vec2D createVec2D(unit x, unit y);
 

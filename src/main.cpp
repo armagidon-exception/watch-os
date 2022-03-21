@@ -7,6 +7,9 @@
 
 Arduino_ST7789 gDisplay(7, 8);
 
+extern void init_settings_app();
+extern void init_calc_app();
+
 void setup() {
   gDisplay.begin();
   gDisplay.clearScreen();
@@ -14,6 +17,8 @@ void setup() {
   initializeClock();
   initClockScene();
   initMainScreen();
+  init_settings_app();
+  init_calc_app();
   setScene(0);
 }
 

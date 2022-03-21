@@ -8,10 +8,6 @@ void setBit(uint8_t* data, uint8_t bit, bool flag) {
     }
 }
 
-Bitmap createBitmap(uint16_t* bitmap, uint16_t size) {
-    return {bitmap, size};
-}
-
 Dimension createDimension(unit w, unit h) {
     return {w, h};
 }

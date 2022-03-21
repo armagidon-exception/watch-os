@@ -12,6 +12,7 @@ List create_int_arraylist(uint8_t __initial_capacity) {
 }
 
 void *get_element(List* list, uint8_t index) {
+    if (index >= list->__element_head) return nullptr;
     return (list->array + (index * list->__element_size));
 }
 
@@ -42,9 +43,8 @@ void add_element(List* list, void* element) {
     auto cursor = (uint8_t*) list->array + list->__element_head * (list->__element_size);
     list->__element_head++;
     auto valptr = (uint8_t*) element;
-    for(uint8_t i = 0; i < list->__element_size; i++) {
+    for(uint8_t i = 0; i < list->__element_size; i++)
         cursor[i] = valptr[i];
-    }
 }
 
 uint8_t reduce(List* list, uint8_t (*accumulator)(uint8_t, uint8_t)) {

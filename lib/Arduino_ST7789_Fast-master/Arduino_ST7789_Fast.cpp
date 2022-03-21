@@ -644,27 +644,21 @@ void Arduino_ST7789::powerSave(uint8_t mode)
   }
 }
 
-void Arduino_ST7789::drawBufferScaled(uint16_t* buf, int16_t x, int16_t y, int16_t w, int16_t h, uint8_t scaleFactor) {
-    w *= scaleFactor;
-    h *= scaleFactor;
-    setAddrWindow(x, y, x+w-1, y+h-1);
-    writeCmd(ST7789_RAMWR);
-    DC_DATA;
-    SPI_START;
-    const uint8_t aW = this->_width;
-    const uint8_t aH = this->_height;
-    for (uint8_t y = 0; y < aH; y++)
+void Arduino_ST7789::drawBufferScaled(const uint16_t* buf, int16_t x, int16_t y, int16_t w, int16_t h, uint8_t scaleFactor) {
+    drawBufferScaled(buf, x, y, w, h, scaleFactor, false);
+}
+
+void Arduino_ST7789::drawBufferScaled(const uint16_t* buf, int16_t x, int16_t y, int16_t w, int16_t h, uint8_t scaleFactor, bool inverted) {
+    for (uint8_t yy = 0; yy < h; yy++)
     {
-        for (uint8_t xa = 0; xa < aW; xa++)
+        for (uint8_t xa = 0; xa < w; xa++)
         {
-            uint8_t yi = y / scaleFactor;
-            uint8_t xi = xa / scaleFactor;
-            uint16_t color = pgm_read_word(&buf[yi * _width + xi]);
-            writeMulti(color, 1);
+            uint16_t color = pgm_read_word(&buf[yy * w + xa]);
+            if (inverted) 
+              color = ~color;
+            fillRect(x + (xa * scaleFactor), y + (yy * scaleFactor), scaleFactor, scaleFactor, color);
         }
     }
-    CS_IDLE;
-    SPI_END;
 }
 
 // ------------------------------------------------

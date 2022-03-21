@@ -1,6 +1,6 @@
 #include "component.h"
 
-static bool ids[16];
+static bool ids[32];
 
 static uint8_t findFreeId() {
     for (uint8_t i = 0; i < sizeof(ids); i++) {

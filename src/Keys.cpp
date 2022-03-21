@@ -4,7 +4,7 @@ void registerKeyHandler(KeyCallback keyhandler, int key) {
     buttons[key].keyhandler = keyhandler;
 }
 
-void dispatch(int key, ButtonState state) {
+static void dispatch(int key, ButtonState state) {
     buttons[key].state = state;
     buttons[key].keyhandler(state, key);
 }

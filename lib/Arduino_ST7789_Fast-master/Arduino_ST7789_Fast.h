@@ -74,7 +74,8 @@ class Arduino_ST7789 : public Adafruit_GFX {
   void setPartArea(uint16_t sr, uint16_t er);
   void setBrightness(uint8_t br);
   void powerSave(uint8_t mode);
-  void drawBufferScaled(uint16_t* buf, int16_t x, int16_t y, int16_t w, int16_t h, uint8_t scale);
+  void drawBufferScaled(const uint16_t* buf, int16_t x, int16_t y, int16_t w, int16_t h, uint8_t scale);
+  void drawBufferScaled(const uint16_t* buf, int16_t x, int16_t y, int16_t w, int16_t h, uint8_t scale, bool inverted);
 
   uint16_t Color565(uint8_t r, uint8_t g, uint8_t b);
   uint16_t color565(uint8_t r, uint8_t g, uint8_t b) { return Color565(r, g, b); } 
