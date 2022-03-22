@@ -57,12 +57,8 @@ void setScene(uint8_t sceneIndex)  {
     showScene(s);
 }
 
-uint8_t addScene(Scene scene) {
-    if (scenes.__element_head > scenes.__initial_capacity - 1) {
-        scenes.array = realloc(scenes.array, scenes.__element_size * (scenes.__element_head + 1));  //Reallocate memory for components array
-    }
-    ((Scene*) scenes.array)[scenes.__element_head++] = scene; //Add new component
-    return (scenes.__element_head - 1);
+void add_scene(Scene scene) {
+    add_element_with_id(&scenes, &scene, scene.id);
 }
 
 Component* findComponentById(uint8_t id) {

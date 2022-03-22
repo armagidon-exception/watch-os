@@ -68,7 +68,7 @@ void initializeClock() {
 }
 
 void initClockScene() {
-    __clockSceneIndex = addScene(create_scene());
+    __clockSceneIndex = addScene(create_scene("clock_scene"));
     Component clock = clockWidget(CLOCK_SCALE, WHITE, BLACK, true);
     clock.x = CLOCK_X;
     clock.y = CLOCK_Y;

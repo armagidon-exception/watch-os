@@ -4,16 +4,15 @@
 #include "button.h"
 #include "application.h"
 #include "ui_elements.h"
-
-#define __MAIN_SCREEN_PTR ((Scene*) get_element(&scenes, __mainScreenSceneIndex))
+#define MAIN_SCREEN_ID "main_screen"
+#define __MAIN_SCREEN_PTR ((Scene*) get_element_by_id(&scenes, MAIN_SCREEN_ID))
 
 extern List scenes;
 static uint8_t __mainScreenSceneIndex;
-static uint8_t  indicatorId;
+static uint8_t indicatorId;
 
 void createMainScreenScene() {
-    __mainScreenSceneIndex = addScene(create_scene());
-    applications = create_arraylist(1, sizeof(Application));
+    add_scene(create_scene(MAIN_SCREEN_ID));
 }
 
 void registerKeyBindings() {
@@ -48,6 +47,10 @@ void initMainScreen() {
     Component statusBar = createComponent(0, 20, [](Component* context, Arduino_ST7789* display) 
         {drawLine(context->x, context->y, DISPLAY_SIZE, 3, false, WHITE);});
     Component clock = clockWidget({DISPLAY_SIZE - 60, 20 - 16}, {WHITE, WHITE, 2, false});
+    if (__MAIN_SCREEN_PTR == nullptr) {
+        Serial.println("scene was not found");
+        return;
+    }
     registerClockWidget(clock.id);
     add_component(__MAIN_SCREEN_PTR, clock);
     add_component(__MAIN_SCREEN_PTR, statusBar);
@@ -61,7 +64,6 @@ void initMainScreen() {
     indicatorId = indicator.id;
     add_component(__MAIN_SCREEN_PTR, indicator);
     
-
     add_component(__MAIN_SCREEN_PTR, create_navigation_button({DISPLAY_SIZE - 20, (DISPLAY_SIZE >> 1) + 20}, true, 3, [](Component* ctx) {
         Component* indicator  = findComponentById(indicatorId);
         uint8_t* index = (uint8_t*) get_from_storage(&indicator->customData, 1);

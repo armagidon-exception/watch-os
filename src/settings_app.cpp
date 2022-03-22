@@ -11,7 +11,6 @@ static Application create_settings_app() {
     auto entrypoint = [](Application* context) {
         Serial.println("TEST");
     };
-    auto scene = create_scene();
     auto title = "Settings";
     return create_application(title, map, entrypoint);
 }

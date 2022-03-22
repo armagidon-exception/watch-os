@@ -10,7 +10,6 @@ Bitmap map = {SETTINGS_LOGO, sizeof(SETTINGS_LOGO), {4, 4}, 16};
     auto entrypoint = [](Application* context) {
         Serial.println("TEST");
     };
-    auto scene = create_scene();
     auto title = "Calculator";
     return create_application(title, map, entrypoint);
 }

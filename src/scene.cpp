@@ -1,13 +1,14 @@
 #include "scene.h"
 #include "stdlib.h"
 
-Scene create_scene() {
+Scene create_scene(const char* id) {
     return {
         false, //Show state
         create_arraylist(1, sizeof(Component)), //Components list
         ((KeyCallback*) calloc(3, sizeof(KeyCallback))), //Key callbacks
         0, //Tab index
-        create_int_arraylist(1) //Focusable elements
+        create_int_arraylist(1), //Focusable elements
+        id
      };
 }
 

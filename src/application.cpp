@@ -1,8 +1,9 @@
 #define __APPLICATIONS__
 #include "application.h"
+#include "stdlib.h"
 
 Application create_application(const char* title, Bitmap bitmap, ApplicationEntrypoint entrypoint) {
-    return {bitmap, entrypoint, create_scene(), title};
+    return {bitmap, entrypoint, create_scene(title), title};
 }
 
 void registerApplication(Application* app) {

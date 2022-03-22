@@ -12,9 +12,10 @@ typedef struct {
     KeyCallback* keyCallbacks;
     uint8_t tabIndex;
     List focusable_elements;
+    const char* id;
 } Scene;
 
-Scene create_scene();
+Scene create_scene(const char* id);
 void showScene(Scene* scene);
 void hideScene(Scene* scene);
 void add_component(Scene* scene, Component cmp);
