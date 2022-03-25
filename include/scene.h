@@ -19,6 +19,7 @@ Scene create_scene(const char* id);
 void showScene(Scene* scene);
 void hideScene(Scene* scene);
 void add_component(Scene* scene, Component cmp);
+void add_component_with_id(Scene* scene, Component cmp, const char* id);
 uint8_t get_focusable_component(Scene* scene, uint8_t tabIndex);
 void next_focusable_component(Scene* scene);
 void previous_focusable_component(Scene* scene);

@@ -29,6 +29,6 @@ Button createButton(uint8_t pin, uint8_t id);
 static Button buttons[] = {createButton(FIRST_PIN, FIRST_KEY), createButton(SECOND_PIN, SECOND_KEY), createButton(THIRD_PIN, THIRD_KEY)};
 
 void registerKeyHandler(KeyCallback, int key);
-static void dispatch(int key, ButtonState state);
+void dispatch(int key, ButtonState state);
 void tickKeys();
 ButtonState getState(uint8_t key);

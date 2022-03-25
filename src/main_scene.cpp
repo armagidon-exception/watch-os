@@ -4,15 +4,26 @@
 #include "button.h"
 #include "application.h"
 #include "ui_elements.h"
+#include "container.h"
+
 #define MAIN_SCREEN_ID "main_screen"
 #define __MAIN_SCREEN_PTR ((Scene*) get_element_by_id(&scenes, MAIN_SCREEN_ID))
 
 extern List scenes;
-static uint8_t __mainScreenSceneIndex;
-static uint8_t indicatorId;
 
 void createMainScreenScene() {
-    add_scene(create_scene(MAIN_SCREEN_ID));
+    auto scene = create_scene(MAIN_SCREEN_ID);
+    //Component statusBar = create_container(0, 20);
+    Component statusBar = createComponent(0, 20, [](Component* context, Arduino_ST7789* display) {drawLine(context->x, context->y, DISPLAY_SIZE, 3, false, WHITE);});
+    Component clock = clockWidget({DISPLAY_SIZE - 60, 20 - 16}, {WHITE, WHITE, 2, false});
+    registerClockWidget(clock.id);
+    add_component(&scene, clock);
+    add_component(&scene, statusBar);
+    add_component(&scene, create_navigation_button({20, (DISPLAY_SIZE >> 1) + 20}, false, 3, [](Component* ctx) {change_indicator_index(__MAIN_SCREEN_PTR, 1);}));
+    add_component_with_id(&scene, create_application_indicator(), "indicator");
+    add_component(&scene, create_navigation_button({DISPLAY_SIZE - 20, (DISPLAY_SIZE >> 1) + 20}, true, 3, [](Component* ctx) {change_indicator_index(__MAIN_SCREEN_PTR, 1);}));
+
+    add_scene(scene);
 }
 
 void registerKeyBindings() {
@@ -44,31 +55,4 @@ void registerKeyBindings() {
 void initMainScreen() {
     createMainScreenScene();
     registerKeyBindings();
-    Component statusBar = createComponent(0, 20, [](Component* context, Arduino_ST7789* display) 
-        {drawLine(context->x, context->y, DISPLAY_SIZE, 3, false, WHITE);});
-    Component clock = clockWidget({DISPLAY_SIZE - 60, 20 - 16}, {WHITE, WHITE, 2, false});
-    if (__MAIN_SCREEN_PTR == nullptr) {
-        Serial.println("scene was not found");
-        return;
-    }
-    registerClockWidget(clock.id);
-    add_component(__MAIN_SCREEN_PTR, clock);
-    add_component(__MAIN_SCREEN_PTR, statusBar);
-    add_component(__MAIN_SCREEN_PTR, create_navigation_button({20, (DISPLAY_SIZE >> 1) + 20}, false, 3, [](Component* ctx) {
-        Component* indicator  = findComponentById(indicatorId);
-        uint8_t* index = (uint8_t*) get_from_storage(&indicator->customData, 1);
-        *index = ((*index) == 0) ? applications.__element_head - 1 : 0;
-        indicator->update  = true;
-    }));
-    Component indicator = create_application_indicator();
-    indicatorId = indicator.id;
-    add_component(__MAIN_SCREEN_PTR, indicator);
-    
-    add_component(__MAIN_SCREEN_PTR, create_navigation_button({DISPLAY_SIZE - 20, (DISPLAY_SIZE >> 1) + 20}, true, 3, [](Component* ctx) {
-        Component* indicator  = findComponentById(indicatorId);
-        uint8_t* index = (uint8_t*) get_from_storage(&indicator->customData, 1);
-        *index = ((*index)++ >= applications.__element_head - 1) ? 0 : *index;
-        indicator->update = true;
-    }));
-    highlightComponent(AS_COMPONENT(get_element(&__MAIN_SCREEN_PTR->components, get_focusable_component(__MAIN_SCREEN_PTR, __MAIN_SCREEN_PTR->tabIndex))));
 }

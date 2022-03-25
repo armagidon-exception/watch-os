@@ -10,7 +10,8 @@
 #define ICON_TYPE 0
 #define BUTTON_TYPE 1
 #define CONTAINER 2
-#define CUSTOM 3
+#define LABEL_TYPE 3
+#define CUSTOM 4
 
 struct Component {
     uint8_t x;

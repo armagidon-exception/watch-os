@@ -4,7 +4,7 @@ void registerKeyHandler(KeyCallback keyhandler, int key) {
     buttons[key].keyhandler = keyhandler;
 }
 
-static void dispatch(int key, ButtonState state) {
+void dispatch(int key, ButtonState state) {
     buttons[key].state = state;
     buttons[key].keyhandler(state, key);
 }
@@ -32,7 +32,7 @@ void tickKeys() {
     }   
 }
 
-static Button createButton(uint8_t pin, uint8_t id) {
+Button createButton(uint8_t pin, uint8_t id) {
     pinMode(pin, INPUT);
     Button button = {RELEASED, pin & 0xF, nullptr};
     buttons[id & 3] = button;

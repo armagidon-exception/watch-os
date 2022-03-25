@@ -4,6 +4,10 @@ Component create_container(uint8_t x, uint8_t y)  {
     Component cmp = createComponent(x, y, nullptr);
     cmp.focusable = true;
     cmp.type = CONTAINER;
+    cmp.render = [](Component* ctx, Arduino_ST7789* render) {
+        Container* container = (Container*) get_from_storage(&ctx->customData, 0);
+        //TODO render container
+    };
     Container container = {create_arraylist(1, sizeof(Component))};
     put_to_storage(&cmp.customData, &container, sizeof(Container));
     return cmp;

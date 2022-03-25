@@ -55,6 +55,13 @@ void setScene(uint8_t sceneIndex)  {
     }
 
     showScene(s);
+
+    Component* highlighted = (Component*) get_element(&s->components, get_focusable_component(s, s->tabIndex));
+
+    if (highlighted == nullptr) return;
+
+    highlightComponent(highlighted);
+
 }
 
 void add_scene(Scene scene) {
@@ -72,4 +79,23 @@ Component* findComponentById(uint8_t id) {
         }
     }
     return nullptr;
+}
+
+uint8_t find_scene_index_by_id(const char* id) {
+    Scene* scene = (Scene*) get_element_by_id(&scenes, id);
+    for (uint8_t i = 0; i < scenes.__element_head; i++) {
+        Scene* curr = (Scene*) get_element(&scenes, i);
+        if (curr == scene) return i;
+    }
+    return 0;
+}
+
+void printText(Arduino_ST7789* renderer, uint8_t x, uint8_t y, uint8_t size, uint16_t fg, uint16_t bg, const char* text) {
+    uint8_t w = 6 * strlen(text) * size, h = 8 * size;
+    renderer->fillRect(x, y, w, h, bg);
+    renderer->setCursor(x, y);
+    renderer->setTextColor(fg);
+    renderer->setTextWrap(false);
+    renderer->setTextSize(size);
+    renderer->println(text);
 }

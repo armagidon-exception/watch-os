@@ -53,3 +53,11 @@ void previous_focusable_component(Scene* scene) {
             scene->tabIndex--;
     });
 }
+
+void add_component_with_id(Scene* scene, Component cmp, const char* id) {
+    add_element_with_id(&scene->components, &cmp, id);
+    if (cmp.focusable) {
+        uint8_t index =  (scene->components.__element_head - 1);
+        add_element(&scene->focusable_elements, &index);
+    }
+}

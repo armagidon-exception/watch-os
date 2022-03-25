@@ -7,6 +7,8 @@
 #include "wiring_private.h"
 #include <SPI.h>
 
+#define COMPATIBILITY_MODE
+
 // -----------------------------------------
 // ST7789 commands
 

@@ -2,6 +2,8 @@
 #include "stdbool.h"
 #include "stdint.h"
 
+#define CHANGE_INDEX(d, max, ptr) if (*ptr == 0 && d < 0) *(ptr) = max; else if (*(ptr) == max && d > 0) *(ptr) = 0; else *(ptr) += d;
+
 typedef uint16_t color;
 typedef const uint16_t* buffer;
 typedef uint8_t unit;

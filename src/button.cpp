@@ -5,7 +5,8 @@ Component create_button(Vec2D pos, RendererCallback render, ComponentCallback on
     cmp.focusable = true;
     cmp.highlighted = false;
     cmp.type = BUTTON_TYPE;
-    put_to_storage(&cmp.customData, &((ButtonData) {onClick}), sizeof(ButtonData));
+    ButtonData data = {onClick};
+    put_to_storage(&cmp.customData, &data, sizeof(ButtonData));
     return cmp;
 }
 

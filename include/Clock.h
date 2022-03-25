@@ -17,3 +17,7 @@ void tickClock();
 void initializeClock();
 void initClockScene();
 void registerClockWidget(uint8_t clockWidget);
+uint8_t get_minutes();
+uint8_t get_hours();
+void set_minutes(uint8_t minutes);
+void set_hours(uint8_t hours);

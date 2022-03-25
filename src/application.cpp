@@ -7,5 +7,6 @@ Application create_application(const char* title, Bitmap bitmap, ApplicationEntr
 }
 
 void registerApplication(Application* app) {
-    add_element(&applications, app);
+    //add_element(&applications, app);
+    add_element_with_id(&applications, app, app->title);
 }

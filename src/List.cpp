@@ -68,16 +68,14 @@ void add_element_with_id(List* list, void* element, const char* id) {
     if (list->__element_head > list->__initial_capacity - 1) {
         list->ids = (const char**) realloc(list->ids, sizeof(const char*) * (list->__element_head + 1));  //Reallocate memory for components array
     }
-    auto ptr = (char*) calloc(strlen(id), sizeof(char));
+    auto ptr = (char*) calloc(strlen(id) + 1, sizeof(char));
     strcpy(ptr, id);
-    Serial.println(ptr);
     list->ids[list->__element_head - 1] = ptr; //Add new component
 }
 
 void *get_element_by_id(List* list, const char* id) {
     for(uint8_t i = 0; i < list->__element_head; i++) {
         auto curr = list->ids[i];
-        Serial.println(curr);
         if (strcmp(curr, id) == 0) {
             return get_element(list, i);
         }

@@ -4,6 +4,8 @@
 #include "Arduino_ST7789_Fast.h"
 #include "stdlib.h"
 
+#define INDICATOR_NAME
+
 typedef struct ArrowShape {
     bool inverted;
     uint8_t size;
@@ -27,7 +29,8 @@ static Component create_navigation_button(Vec2D pos, bool inverted, uint8_t size
             display->fillTriangle(x1, y1, x2, y2, x3, y3, BLACK);
         }
     }, onClick);
-    put_to_storage(&component.customData, &((ArrowShape) {inverted, size}), sizeof(ArrowShape));
+    ArrowShape shape= {inverted, size};
+    put_to_storage(&component.customData, &shape, sizeof(ArrowShape));
     return component;
 }
 
@@ -58,5 +61,33 @@ static Component create_application_indicator() {
     });
     uint8_t applicationIndex = 0;
     put_to_storage(&cmp.customData, &applicationIndex, sizeof(uint8_t));
+    return cmp;
+}
+
+static void change_indicator_index(Scene* screen, int8_t x) {
+    Component* indicator  = (Component*) (get_element_by_id(&screen->components, "indicator"));
+    uint8_t* ptr = (uint8_t*) get_from_storage(&indicator->customData, 1);
+    CHANGE_INDEX(x, applications.__element_head - 1, ptr);
+    indicator->update = true;
+}
+
+typedef struct {
+    char* label;
+    uint8_t size;
+} Label;
+
+static Component create_label(uint8_t x, uint8_t y, uint8_t size, const char* label) {
+    Component cmp = createComponent(x, y, [](Component* context, Arduino_ST7789* renderer) {
+        Label* label = (Label*) get_from_storage(&context->customData, 0);
+        if (!context->highlighted)
+            printText(renderer, context->x, context->y, label->size, WHITE, BLACK, label->label);
+        else
+            printText(renderer, context->x, context->y, label->size, BLACK, WHITE, label->label);
+    });
+    cmp.type = LABEL_TYPE;
+    char* labelPtr = (char*) calloc(strlen(label) + 1, sizeof(char));
+    strcpy(labelPtr, label);
+    Label l = {labelPtr, size};
+    put_to_storage(&cmp.customData, &l, sizeof(Label));
     return cmp;
 }

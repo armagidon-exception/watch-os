@@ -10,3 +10,5 @@ void render();
 void setScene(uint8_t sceneIndex);
 void add_scene(Scene scene);
 Component* findComponentById(uint8_t id);
+uint8_t find_scene_index_by_id(const char* id);
+void printText(Arduino_ST7789* renderer, uint8_t x, uint8_t y, uint8_t size, uint16_t fg, uint16_t bg, const char* text);
