@@ -11,18 +11,20 @@
 
 extern List scenes;
 
-void createMainScreenScene() {
-    auto scene = create_scene(MAIN_SCREEN_ID);
-    //Component statusBar = create_container(0, 20);
+static void cmp_ldr(Scene* scene) {
     Component statusBar = createComponent(0, 20, [](Component* context, Arduino_ST7789* display) {drawLine(context->x, context->y, DISPLAY_SIZE, 3, false, WHITE);});
     Component clock = clockWidget({DISPLAY_SIZE - 60, 20 - 16}, {WHITE, WHITE, 2, false});
     registerClockWidget(clock.id);
-    add_component(&scene, clock);
-    add_component(&scene, statusBar);
-    add_component(&scene, create_navigation_button({20, (DISPLAY_SIZE >> 1) + 20}, false, 3, [](Component* ctx) {change_indicator_index(__MAIN_SCREEN_PTR, 1);}));
-    add_component_with_id(&scene, create_application_indicator(), "indicator");
-    add_component(&scene, create_navigation_button({DISPLAY_SIZE - 20, (DISPLAY_SIZE >> 1) + 20}, true, 3, [](Component* ctx) {change_indicator_index(__MAIN_SCREEN_PTR, 1);}));
+    add_component(scene, clock);
+    add_component(scene, statusBar);
+    add_component(scene, create_navigation_button({20, (DISPLAY_SIZE >> 1) + 20}, false, 3, [](Component* ctx) {change_indicator_index(__MAIN_SCREEN_PTR, 1);}));
+    add_component_with_id(scene, create_application_indicator(), "indicator");
+    add_component(scene, create_navigation_button({DISPLAY_SIZE - 20, (DISPLAY_SIZE >> 1) + 20}, true, 3, [](Component* ctx) {change_indicator_index(__MAIN_SCREEN_PTR, 1);}));
+}
 
+void createMainScreenScene() {
+    auto scene = create_scene(MAIN_SCREEN_ID);
+    scene.component_loader = cmp_ldr;
     add_scene(scene);
 }
 

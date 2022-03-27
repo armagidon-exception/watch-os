@@ -39,3 +39,8 @@ void* get_from_storage(DataStorage* storage, uint8_t index) {
     }
     return storage->data + offset;
 }
+
+void dispose_storage(DataStorage* storage) {
+    free(storage->data);
+    free(storage->offsets);
+}

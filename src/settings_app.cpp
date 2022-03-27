@@ -18,9 +18,11 @@ static uint8_t pinned_cmp = 0;
 static const uint8_t hours_id = 0;
 static const uint8_t minutes_id = 1;
 
-static void init_settings_scene(Scene* s) {
-    Component timeLabel = create_label(10, 10, 3, "Time: >");
-    add_component(s, timeLabel);
+static void cmp_ldr(Scene* s) {
+    {
+        Component timeLabel = create_label(10, 10, 3, "Time: >");
+        add_component(s, timeLabel);
+    }
     {
         char* hoursString = (char*) calloc(3, sizeof(char));
         sprintf(hoursString, "%02d", tmpHours);
@@ -31,13 +33,13 @@ static void init_settings_scene(Scene* s) {
         add_component_with_id(s, hoursLabel, "hours");
     }
     {
-        char* minutesString = (char*) calloc(3, sizeof(char));
-        Component minutesLabel = create_label(160, 10, 3, minutesString);
-        sprintf(minutesString, "%02d", tmpMinutes);
-        minutesLabel.focusable = true;
-        uint8_t tmpm = minutes_id;
-        put_to_storage(&minutesLabel.customData, &tmpm, sizeof(uint8_t));
-        add_component_with_id(s, minutesLabel, "minutes");
+        char* hoursString = (char*) calloc(3, sizeof(char));
+        sprintf(hoursString, "%02d", tmpMinutes);
+        Component hoursLabel = create_label(160, 10, 3, hoursString);
+        hoursLabel.focusable = true;
+        uint8_t tmph = minutes_id;
+        put_to_storage(&hoursLabel.customData, &tmph, sizeof(uint8_t));
+        add_component_with_id(s, hoursLabel, "minutes");
     }
     {
         Component saveButton = create_button({120, 200}, [](Component* context, Arduino_ST7789* renderer) {
@@ -63,11 +65,13 @@ static void init_settings_scene(Scene* s) {
         });
         add_component(s, exitButton);
     }
+}
 
+static void init_settings_scene(Scene* s) {
+    s->component_loader = cmp_ldr;
     KeyCallback f = [](ButtonState state, uint8_t keyCode) {
-        Scene* s = &((Application*) (get_element_by_id(&applications, "Settings")))->scene;
+        Scene* s = get_current_scene();
         if (state == PRESSED) {
-            Serial.println(pinned);
             if (!pinned)
                 next_focusable_component(s);
             else {
@@ -90,7 +94,7 @@ static void init_settings_scene(Scene* s) {
     };
     KeyCallback f1 = [](ButtonState state, uint8_t keyCode) {
         if (state == PRESSED) {
-            Scene* s = &((Application*) (get_element_by_id(&applications, "Settings")))->scene;
+            Scene* s = get_current_scene();
             Component* current_component = (Component*) (get_element(&s->components, get_focusable_component(s, s->tabIndex)));
             if (current_component->type == BUTTON_TYPE) {
                 ButtonData* data = getButtonData(current_component);
@@ -106,9 +110,8 @@ static void init_settings_scene(Scene* s) {
         }
     };
     KeyCallback f2 = [](ButtonState state, uint8_t keyCode) {
-        Scene* s = &((Application*) (get_element_by_id(&applications, "Settings")))->scene;
+        Scene* s = get_current_scene();
         if (state == PRESSED) {
-            Serial.println(pinned);
             if (!pinned)
                 previous_focusable_component(s);
             else {
@@ -132,18 +135,18 @@ static void init_settings_scene(Scene* s) {
     s->keyCallbacks[0] = f;
     s->keyCallbacks[1] = f1;
     s->keyCallbacks[2] = f2;
-
 }
 
 static Application create_settings_app() {
     Bitmap map = {SETTINGS_LOGO, sizeof(SETTINGS_LOGO), {4, 4}, 16};
     auto entrypoint = [](Application* context) {
-        init_settings_scene(&context->scene);
-        add_scene(context->scene);
         setScene(find_scene_index_by_id(context->scene.id));
     };
     auto title = "Settings";
-    return create_application(title, map, entrypoint);
+    Application app = create_application(title, map, entrypoint);
+    init_settings_scene(&app.scene);
+    add_scene(app.scene);
+    return app;
 }
 
 void init_settings_app() {

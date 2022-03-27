@@ -12,6 +12,7 @@ extern void init_settings_app();
 extern void init_calc_app();
 
 void setup() {
+  pinMode(A1, INPUT);
   Serial.begin(9600);
   gDisplay.begin();
   gDisplay.clearScreen();
@@ -26,6 +27,7 @@ void setup() {
 
 static u32 timer = millis();
 void loop() {
+  Serial.println(constrain(map(analogRead(A1), 778, 870, 0, 100), 0, 100));
   tickKeys();
   tickClock();
   if (millis() - timer >= 16) {

@@ -91,3 +91,33 @@ static Component create_label(uint8_t x, uint8_t y, uint8_t size, const char* la
     put_to_storage(&cmp.customData, &l, sizeof(Label));
     return cmp;
 }
+
+static Component create_label_button(Vec2D pos, Label label, ComponentCallback onClick) {
+    Component button = create_button(pos, [](Component* context, Arduino_ST7789* renderer) {
+        Label* label = (Label*) get_from_storage(&context->customData, 1);
+        if (!context->highlighted)
+            printText(renderer, context->x, context->y, label->size, WHITE, BLACK, label->label);
+        else
+            printText(renderer, context->x, context->y, label->size, BLACK, WHITE, label->label);  
+    }, onClick);
+    put_to_storage(&button.customData, &label, sizeof(label));
+}
+
+typedef struct NumberLabel {
+    uint8_t size;
+    uint8_t number;
+} NumberLabel;
+
+static Component create_number_label_button(Vec2D pos, NumberLabel label, ComponentCallback onClick) {
+    Component button = create_button(pos, [](Component* context, Arduino_ST7789* renderer) {
+        NumberLabel* label = (NumberLabel*) get_from_storage(&context->customData, 1);
+        char* lbl = (char*) calloc(2, sizeof(char));
+        sprintf(lbl, "%d", label->number);
+        if (!context->highlighted)
+            printText(renderer, context->x, context->y, label->size, WHITE, BLACK, lbl);
+        else
+            printText(renderer, context->x, context->y, label->size, BLACK, WHITE, lbl);  
+        free(label);
+    }, onClick);
+    put_to_storage(&button.customData, &label, sizeof(label));
+}

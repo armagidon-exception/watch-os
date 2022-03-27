@@ -4,7 +4,7 @@
 
 typedef struct List {
     void* array;
-    const char** ids;
+    char** ids;
     uint8_t __element_head;
     uint8_t __element_size;
     uint8_t __initial_capacity;
@@ -21,3 +21,4 @@ uint8_t add_element(List*, void*);
 void add_element_with_id(List*, void*, const char*);
 uint8_t reduce(List* list, uint8_t (*accumulator)(uint8_t, uint8_t));
 void deleteList(List* list);
+void clearList(List* list);

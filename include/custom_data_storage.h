@@ -10,3 +10,4 @@ typedef struct {
 DataStorage allocate_storage(void);
 void put_to_storage(DataStorage* storage, void* element, uint8_t size);
 void* get_from_storage(DataStorage* storage, uint8_t index);
+void dispose_storage(DataStorage* storage);

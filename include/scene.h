@@ -6,13 +6,14 @@
 #define __CLOCK_SCENE 0
 #define __MAINSCREEN_SCENE_INDEX 1
 
-typedef struct {
+typedef struct Scene{
     bool show:1;
     List components;
     KeyCallback* keyCallbacks;
     uint8_t tabIndex;
     List focusable_elements;
     const char* id;
+    void (*component_loader)(Scene* scene);
 } Scene;
 
 Scene create_scene(const char* id);

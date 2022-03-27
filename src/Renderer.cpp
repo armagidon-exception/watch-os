@@ -8,7 +8,7 @@
 
 static Arduino_ST7789 *gDisplay;
 List scenes;
-static uint8_t currentSceneIndex;
+static int16_t currentSceneIndex = -1;
 
 void handleButton1(ButtonState state);
 
@@ -35,17 +35,31 @@ void drawLine(int x, int y, int length, uint8_t thickness, bool vertical, uint16
     gDisplay->fillRect(x,y, vertical ? thickness : length, vertical ? length : thickness, color);
 }
 
-void setScene(uint8_t sceneIndex)  {
-    Scene* s = (Scene*) get_element(&scenes, currentSceneIndex);
-    hideScene(s);
+void setScene(uint8_t sceneIndex) {
+    Scene* s;
+    if (currentSceneIndex != -1) {
+        s = (Scene*) get_element(&scenes, currentSceneIndex);
+        hideScene(s);
+        for_each(&s->components, [](void* context) {
+            Component* ptr = (Component*) context;
+            dispose_storage(&ptr->customData);
+        });
+        clearList(&s->components);
+        clearList(&s->focusable_elements);
+    }
     gDisplay->clearScreen();
     currentSceneIndex = sceneIndex;
+
+    s = (Scene*) get_element(&scenes, currentSceneIndex);
+    if (s->component_loader != nullptr) {
+        s->component_loader(s);
+    }
+
     for_each(&s->components, [](void* context) {
         Component* ptr = (Component*) context;
         ptr->update = true;
     });
 
-    s = (Scene*) get_element(&scenes, currentSceneIndex);
     for(uint8_t i = 0; i < 3; i++) {
         registerKeyHandler([](ButtonState state, uint8_t keyCode) {
             Scene* s = (Scene*) get_element(&scenes,  currentSceneIndex);
@@ -98,4 +112,8 @@ void printText(Arduino_ST7789* renderer, uint8_t x, uint8_t y, uint8_t size, uin
     renderer->setTextWrap(false);
     renderer->setTextSize(size);
     renderer->println(text);
+}
+
+Scene* get_current_scene() {
+    return (Scene*) get_element(&scenes, currentSceneIndex);
 }

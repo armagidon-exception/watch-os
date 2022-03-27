@@ -7,7 +7,7 @@ List create_arraylist(uint8_t __initial_capacity, uint8_t __element_size) {
         __initial_capacity = 1;
     return {
                 calloc(__initial_capacity, __element_size),
-                (const char**) calloc(__initial_capacity, sizeof(const char*)),
+                (char**) calloc(__initial_capacity, sizeof(char*)),
                 0,
                 __element_size,
                 __initial_capacity
@@ -36,7 +36,14 @@ void for_each(List* list, void (*action)(void* context)) {
 }
 
 void deleteList(List* list) {
-    free(list->array);
+    free(list->array); //Free array
+    for(uint8_t i = 0; i < list->__element_head; i++) {//Free ids 
+        char* curr = list->ids[i];
+        if (curr != nullptr) {
+            free(list->ids[i]);
+        }
+    }
+    free(list->ids); //Free ids array
 }
 
 void add_int(List* list, uint8_t element) {
@@ -66,7 +73,7 @@ uint8_t reduce(List* list, uint8_t (*accumulator)(uint8_t, uint8_t)) {
 void add_element_with_id(List* list, void* element, const char* id) {
     add_element(list, element);
     if (list->__element_head > list->__initial_capacity - 1) {
-        list->ids = (const char**) realloc(list->ids, sizeof(const char*) * (list->__element_head + 1));  //Reallocate memory for components array
+        list->ids = (char**) realloc(list->ids, sizeof(char*) * (list->__element_head + 1));  //Reallocate memory for components array
     }
     auto ptr = (char*) calloc(strlen(id) + 1, sizeof(char));
     strcpy(ptr, id);
@@ -81,4 +88,10 @@ void *get_element_by_id(List* list, const char* id) {
         }
     }
     return nullptr;
+}
+
+void clearList(List* list) {
+    list->__element_head = 0;
+    list->array = realloc(list->array, list->__element_size);
+    list->ids = (char**) realloc(list->ids, sizeof(char*));
 }

@@ -7,9 +7,9 @@
 #define SECOND_KEY 1
 #define THIRD_KEY 2
 
-#define FIRST_PIN 4
+#define FIRST_PIN 6
 #define SECOND_PIN 5
-#define THIRD_PIN 6
+#define THIRD_PIN 4
 
 typedef enum {
     PRESSED,

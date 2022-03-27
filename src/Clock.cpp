@@ -17,7 +17,6 @@ static List clockWidgetIds;
 #define HOURS_ADDRESS 0
 #define MINUTES_ADDRESS 1
 
-
 void tickClock() {
     bool update = false;
     if (millis() - timeStump >= 1000) {
@@ -66,6 +65,10 @@ void renderClock(Component* context, Arduino_ST7789* display) {
 
 
 void registerClockWidget(uint8_t clockWidget) {
+    for (uint8_t i = 0; i < clockWidgetIds.__element_head; i++) {
+        uint8_t id = *(uint8_t*) get_element(&clockWidgetIds, i);
+        if (id == clockWidget) return;
+    }
     add_int(&clockWidgetIds, clockWidget);
 }
 
@@ -73,14 +76,17 @@ void initializeClock() {
     clockWidgetIds = create_int_arraylist(1);
 }
 
-void initClockScene() {
-    auto scene = create_scene(CLOCK_SCENE);
+static void cmp_ldr(Scene* scene) {
     Component clock = clockWidget(CLOCK_SCALE, WHITE, BLACK, true);
     clock.x = CLOCK_X;
     clock.y = CLOCK_Y;
-    add_component(&scene, clock);
+    add_component(scene, clock);
     registerClockWidget(clock.id);
+}
 
+void initClockScene() {
+    auto scene = create_scene(CLOCK_SCENE);
+    scene.component_loader = cmp_ldr;
     KeyCallback wakeUpLambda = [](ButtonState state, uint8_t keyCode) {
         if (state == PRESSED)
             setScene(__MAINSCREEN_SCENE_INDEX);
