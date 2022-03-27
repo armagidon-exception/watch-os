@@ -1,3 +1,17 @@
+/**
+ * @file component.h
+ * @author Armagidon
+ * @brief Represents a basic component for the OS
+ * Holds position, type, focusable, highlighted properties.
+ * Holds pointer to render method of this components.
+ * Updating is done through update property. It needs to be set to true in order to force the renderer to update the component.
+ * @version 0.1
+ * @date 2022-03-27
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #pragma once
 #include "utils.h"
 #include "custom_data_storage.h"

@@ -1,3 +1,18 @@
+/**
+ * @file Renderer.h
+ * 
+ * @author Armagidon
+ * @brief Rendering system for the OS. 
+ * Holds all instances of scene object and index pointer to a current set scene.
+ * Handles setup of a scene, disposal of scene and its components.
+ * Renders components based on their update property
+ * @version 0.1
+ * @date 2022-03-27
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #pragma once
 #include "utils.h"
 #include "scene.h"

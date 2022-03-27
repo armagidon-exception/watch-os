@@ -1,3 +1,18 @@
+/**
+ * @file scene.h
+ * @author your name (you@domain.com)
+ * @brief Represents a scene for the OS
+ * Holds all the objects that need to be displayed
+ * Holds a string id of the scene
+ * Holds all key bindings for the scene
+ * Holds a component loader for the scene, through which needed components can be added during setup time
+ * Holds a tab index to switch focus to a specific component
+ * @version 0.1
+ * @date 2022-03-27
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #pragma once
 #include "component.h"
 #include "List.h"
